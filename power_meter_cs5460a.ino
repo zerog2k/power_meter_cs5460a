@@ -26,7 +26,7 @@
 
 // pins from power monitor module
 #define CLKPIN  2
-#define SDOPIN  3
+#define SDOPIN  3     // should be on PORTD. Will need to change the ClockISR if different
 
 #define BUFSIZE 20    // grab last 20 bytes of message
 
@@ -34,8 +34,8 @@
 #define CURRENT_RANGE    0.050   // full scale I channel voltage (PGA 50x instead of 10x)
 #define VOLTAGE_DIVIDER  450220.0/220.0    // input voltage channel divider (R1+R2/R2)
 #define CURRENT_SHUNT    620      // empirically obtained multiplier to scale Vshunt drop to I    
-#define FLOAT24       16777216.0  // 2^24
-#define POWER_MULTIPLIER    1 / 512.0   // Energy->Power divider; not sure why, but this seems right. Datasheet is not very clear about this.
+#define FLOAT24       16777216.0  // 2^24 (converts to float24)
+#define POWER_MULTIPLIER    1 / 512.0   // Energy->Power divider; not sure why, but seems correct. Datasheet not clear about this.
 
 #define VOLTAGE_MULTIPLIER   (float)  (1 / FLOAT24 * VOLTAGE_RANGE * VOLTAGE_DIVIDER)
 #define CURRENT_MULTIPLIER   (float)  (1 / FLOAT24 * CURRENT_RANGE * CURRENT_SHUNT)
@@ -53,6 +53,8 @@ RF24 radio(9,10);
 
 const uint8_t rfchan = 1;
 const uint8_t txaddr[] = {  0x00, 0x53, 0x4E, 0x45, 0x4A }; // inverted from raspi
+
+// simple message structure to simplify unpacking on other end
 
 enum msgtype {
   MSG_POWER_METER
@@ -78,8 +80,6 @@ void setup() {
 
   pinMode(SDOPIN, INPUT);
   pinMode(CLKPIN, INPUT_PULLUP);
-  pinMode(8, OUTPUT);
-  
   Serial.begin(9600);
   
   Serial.println(F("CS5460A monitor start..."));
@@ -137,13 +137,19 @@ void loop() {
   TIFR2 = _BV(TOV2); // clear T2 interrupts 
   TCNT2 = TIMER_RESET; // reset T2 counter
   TIMSK2 = _BV(TOIE2); // enable T2 overflow interrupt
+  // setup interrupt to clock in data until we hit the sync pulse
   attachInterrupt(digitalPinToInterrupt(CLKPIN), ClockISR, RISING);
-  // stop when we we hit a long pulse
+  // stop when we we hit the long pulse
   while (! syncpulse);
   detachInterrupt(digitalPinToInterrupt(CLKPIN));
   TIMSK2 = 0; // disable T2 interrupt
 
   // parse result
+  /*
+   We'll only care about the last 20 bytes of the previous frame before the long clock pulse
+   This contains the last status register where DRDY=1, followed by registers:
+   Vrms, Irms, E (true power)
+  */
   
   bool result_good = false;
   cbuf.rp_front();
@@ -153,7 +159,8 @@ void loop() {
     // read backwards, little-endian?
     array2int.bytearray[3 - i] = cbuf.pop();
 
-  // check status register is has conversion ready ( DRDY=1, ID=15 )
+  // check Status register is has conversion ready ( DRDY=1, ID=15 )
+  // if this doesnt match expected result, probably means the buffer has junk
   if ( array2int.uint32 == 0x009003C1)
     result_good = true;
   
@@ -164,6 +171,7 @@ void loop() {
     
   if (result_good) {
 
+    // read Vrms register
     for (i=0; i < 4; i++)
       // read backwards, little-endian?
       array2int.bytearray[3 - i] = cbuf.pop();
@@ -171,6 +179,7 @@ void loop() {
     float voltage = voltageraw * VOLTAGE_MULTIPLIER;
     msg.voltage = voltage;
     
+    // read Irms register
     for (i=0; i < 4; i++)
       // read backwards, little-endian?
       array2int.bytearray[3 - i] = cbuf.pop();
@@ -178,12 +187,13 @@ void loop() {
     float current = currentraw * CURRENT_MULTIPLIER;
     msg.current = current;
     
+    // read E (energy) register
     for (i=0; i < 4; i++)
       // read backwards, little-endian?
       array2int.bytearray[3 - i] = cbuf.pop();
       
     if (array2int.bytearray[2] >> 7) {
-      // must sign extend int24 -> int32, LE
+      // must sign extend int24 -> int32LE
       array2int.bytearray[3] = 0xFF;
     }
     int32_t energyraw = array2int.int32;
