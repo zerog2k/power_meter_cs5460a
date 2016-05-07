@@ -1,6 +1,8 @@
 # power_meter_cs5460a
 Arduino sketch for reading CS5460A-based digital power meter.
 
+[example power meter on Banggood](http://www.banggood.com/Energy-Meter-Watt-Volt-Voltage-Electricity-Monitor-Analyzer-p-907127.html?p=WX0407753399201409DA)
+
 ![Image of Power meter banggood SKU089379](http://img.banggood.com/thumb/large/upload/2012/jiangjunchao/SKU089379/yuan/SKU089379 (1).jpg)
 
 ## Warning
@@ -69,4 +71,3 @@ Some captures of startup and running/recurring signals are in [(logic_analyzer_c
 
 [CS5460A Datasheet](http://www.cirrus.com/en/pubs/proDatasheet/CS5460A_F5.pdf)
 
-[similar power meter on Banggood](http://www.banggood.com/Energy-Meter-Watt-Volt-Voltage-Electricity-Monitor-Analyzer-p-907127.html)
