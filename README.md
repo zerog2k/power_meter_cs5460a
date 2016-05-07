@@ -1,8 +1,6 @@
 # power_meter_cs5460a
 Arduino sketch for reading CS5460A-based digital power meter.
 
-[example power meter sold by Banggood](http://www.banggood.com/Energy-Meter-Watt-Volt-Voltage-Electricity-Monitor-Analyzer-p-907127.html?p=WX0407753399201409DA)
-
 ![Image of Power meter banggood SKU089379](http://img.banggood.com/thumb/large/upload/2012/jiangjunchao/SKU089379/yuan/SKU089379 (1).jpg)
 
 ## Warning
@@ -11,13 +9,15 @@ Use galvanic isolation, e.g. optocouplers, etc if you want to wire this up direc
 Be sure you know what your are doing around potentially lethal mains-level voltages. Use at your own risk!
 
 ## hardware
-- Arduino Pro-Mini 3.3v
-- NRF24L01+ radio module
+- [ CS5460A-based power monitor aka "watt" meter ](http://www.banggood.com/Energy-Meter-Watt-Volt-Voltage-Electricity-Monitor-Analyzer-p-907127.html?p=WX0407753399201409DA)
+- [ Arduino Pro-Mini 3.3v 8Mhz ](http://www.banggood.com/3Pcs-3_3V-8MHz-ATmega328P-AU-Pro-Mini-Microcontroller-Board-For-Arduino-p-980290.html?p=WX0407753399201409DA)
+- [ NRF24L01+ 2.4 GHz radio module ](http://www.banggood.com/Wholesale-Perfect-High-Quality-New-NRF24L01-2_4GHz-Wireless-Transceiver-Module-Arduino-p-41612.html?p=WX0407753399201409DA)
 - Arduino pin 2 is connected to CLK
 - Arduino pin 3 is connected to SDO
 - Grounds are common to pcb and arduino inside the enclosure (see warning above!)
 - Taking 5V from 78L05 regulator to arduino Vraw in.
-- using 10uF cap on both arduino Vraw and NRF24L01 VCC inputs.
+- NRF24L01 taking vcc from arduino (3.3v regulated)
+- using 10uF cap on both arduino Vraw and NRF24L01 VCC inputs to smooth transients.
 
 ## analysis
 Analysis of SPI communication between oem mcu and CS5460A chip.
