@@ -11,7 +11,7 @@ Be sure you know what your are doing around potentially lethal mains-level volta
 ## hardware
 - [ CS5460A-based power monitor aka "watt" meter ](http://www.banggood.com/Energy-Meter-Watt-Volt-Voltage-Electricity-Monitor-Analyzer-p-907127.html?p=WX0407753399201409DA)
 - [ Arduino Pro-Mini 3.3v 8Mhz ](http://www.banggood.com/3Pcs-3_3V-8MHz-ATmega328P-AU-Pro-Mini-Microcontroller-Board-For-Arduino-p-980290.html?p=WX0407753399201409DA)
-- [ NRF24L01+ 2.4 GHz radio module ](http://www.banggood.com/Wholesale-Perfect-High-Quality-New-NRF24L01-2_4GHz-Wireless-Transceiver-Module-Arduino-p-41612.html?p=WX0407753399201409DA)
+- [ NRF24L01+ 2.4 GHz radio module ](http://www.banggood.com/2Pcs-10PINS-NRF24L01-2_4GHz-Wireless-Transceiver-Module-For-Arduino-p-948143.html?p=WX0407753399201409DA)
 - Arduino pin 2 is connected to CLK
 - Arduino pin 3 is connected to SDO
 - Grounds are common to pcb and arduino inside the enclosure (see warning above!)
