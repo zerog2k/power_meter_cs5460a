@@ -28,7 +28,7 @@ radio = RF24(RPI_BPLUS_GPIO_J8_15, RPI_BPLUS_GPIO_J8_24, BCM2835_SPI_SPEED_1MHZ)
 #irq_gpio_pin = RPI_BPLUS_GPIO_J8_18
 #irq_gpio_pin = 24
 
-pipes = [0x4A454E5300]
+pipes = [ 0x4A454E5300 ]
 
 radio.begin()
 
@@ -40,7 +40,7 @@ radio.enableDynamicPayloads()
 
 radio.printDetails()
 
-radio.openReadingPipe(0, pipes[0])
+radio.openReadingPipe(1, pipes[0])
 radio.startListening()
 
 dt = datetime
