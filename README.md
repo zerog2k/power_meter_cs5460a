@@ -22,15 +22,12 @@ Be sure you know what your are doing around potentially lethal mains-level volta
 ## analysis
 Analysis of SPI communication between oem mcu and CS5460A chip.
 
-Saleae Logic (highly recommended!) was used to analyze the communication between original mcu and CS5460A chip.
-
-Some captures of startup and running/recurring signals are in [(logic_analyzer_captures)] folder.
-
-### interaction
+- Saleae Logic (highly recommended!) was used to analyze the communication between original mcu and CS5460A chip.
+- Some captures of startup and running/recurring signals are in [logic_analyzer_captures](logic_analyzer_captures) folder.
 - Refer to datasheet for complete understanding of registers and formatting of values.
 - In annotations below mcu->cs5460 (SDI) is `>` while cs5460->mcu (SDO) is `<`
 
-#### startup
+### startup
 ```
 > A0        (power-up/halt)
 > 00        (reg read: config)
@@ -48,7 +45,7 @@ Some captures of startup and running/recurring signals are in [(logic_analyzer_c
 < 00 0F A0  (4000 = 1/sec)
 > E8        (start conversion, continuous)
 ```
-#### repeating 1 second loop
+### repeating 1 second loop
 ```
 > 1E        (reg read: status)
 < 10 03 C1  (DRDY=0)
